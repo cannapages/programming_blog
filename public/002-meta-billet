@@ -1,0 +1,134 @@
+<!DOCTYPE html><!-- From HTML5 Boilerplate -->
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Méta-billet: un mot sur le Calepin!</title>
+		<meta name="description" content="Il existe de nombreux moteurs de blogue gratuits sur internet. Pourquoi avoir jeté l&#39;ancre sur ce discret et modeste Calepin?" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="/css/normalize.css" />
+		<link rel="stylesheet" href="/css/main.css" />
+		<link rel="stylesheet" href="/css/fontello.css" />
+		<link type="text/css" href="http://fonts.googleapis.com/css?family=Telex" rel="stylesheet" />
+		<link title="RSS" href="http://localhost/rss" rel="alternate" type="application/rss&#43;xml" />
+	</head>
+	<body>
+		
+		<div class="header">
+			<div class="title">
+				<a href="/">Site Name</a>
+				<br />
+				<span class="tagline"></span>
+			</div>
+		</div>
+		<nav>
+			<div class="container">
+				<div class="left">
+					<a class="huge" href="003-dependances" title="npm: la base essentielle pour débuter avec node.js">«</a>
+				</div>
+				<div class="middle">
+					<span>Méta-billet: un mot sur le Calepin!</span>
+				</div>
+				<div class="right">
+					<a href="j-42-preparation" title="Propulsé par node.js" class="huge">»</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</nav>
+		<main>
+			<time>2012-02-29</time>
+			<article><p>Il existe de nombreux moteurs de blogue gratuits sur internet, tels <a href="http://wordpress.org/">Wordpress</a>, <a href="http://blogger.com/">Blogger</a> et <a href="https://www.tumblr.com/">Tumblr</a>. Pourquoi avoir jeté l’ancre sur ce discret et modeste <a href="http://calepin.co/">Calepin</a>? Peut-être un peu pour ça, tiens, pour me tenir loin des tumultes de ces méga-centres urbains du Web. Un peu aussi pour ce <em>design</em> minimaliste, centré sur le contenu, sur les mots. Et un peu pour deux qualités franchement moins romantiques: <em>dropbox</em> et <em>markdown</em>.</p>
+
+<h3>Mes billets, mon coffret</h3>
+
+<p>La plupart des <a href="http://www.oqlf.gouv.qc.ca/ressources/bibliotheque/dictionnaires/terminologie_blogue/blogiciel.html">blogiciels</a> utilisent une base de données quelconque pour stocker leurs articles. Wordpress, par exemple, repose sur une base de données <a href="http://codex.wordpress.org/FAQ_Developer_Documentation#Why_does_WordPress_only_support_MySQL.3F_What_about_DB_abstraction.3F">MySql</a>. Pour éviter à l’utilisateur l’horrible expérience d’inscrire son texte directement dans la base de données via des commandes SQL, ces blogiciels offrent, généralement sous la forme d’une page Web privée, des outils d’édition maison, permettant d’insérer, modifier ou supprimer les articles de façon relativement conviviale. C’est bien, c’est même un aspect important de ce qu’il est convenu d’appeler le <a href="http://fr.wikipedia.org/wiki/Web_2.0">Web 2.0</a>, mais c’est une approche qui comporte quelques irritants:</p>
+
+<ul>
+<li>Le contenu doit être saisi dans l’outil d’édition fourni. Ou importé d’un format tiers, si l’outil d’édition le permet. Bon nombre de formats sont théoriquement “compatibles” avec Wordpress, moyennant l’installation de tel ou tel <a href="http://www.oqlf.gouv.qc.ca/ressources/bibliotheque/dictionnaires/internet/fiches/1299146.html">plugiciel</a> plus ou moins supporté, maintenu et fonctionnel, mais c’est quand même une étape de plus, donc de trop.</li>
+<li>Les billets sont conservés dans l’inutilisable format de la base de données. Bien sûr, on peut se tourner vers une fonctionnalité d’exportation du contenu, question d’obtenir, par exemple, un sympathique fichier XML (oui, c’est du sarcasme), le tout avec plus ou moins de contrôle sur ce qui sera exporté.</li>
+</ul>
+
+<p>On parle pourtant de blogue ici, d’articles écrits pour être lus. Je peux imaginer assez aisément bon nombre d’auteurs écrire d’abord leurs billets dans le traitement de texte de leur choix, pour ensuite le transcrire, le copier ou l’importer tant bien que mal dans le blogiciel. Le Calepin prend une approche plus respectueuse du texte: mes billets restent dans leur fichier d’origine, bien au chaud et en sécurité dans <em>mon</em> coffret dans les nuages, <em>mon</em> dropbox. Le Calepin n’a besoin que d’un accès autorisé à un répertoire spécifique de dropbox, et à mon signal, il lit le contenu de ce répertoire et construit le blogue à partir de ce qu’il y trouve.</p>
+
+<p>Je ferme mon blogue? Je largue les amarres? Mes billets sont toujours confortablement installés dans mon nuage. Et en tout temps, ils demeurent totalement lisibles et modifiables par l’outil de <em>mon</em> choix. Ce qui m’amène à parler du format de ces articles.</p>
+
+<h3>Minimaliste jusque dans la syntaxe</h3>
+
+<p>Le format, la langue que comprend le Calepin, est le <a href="http://daringfireball.net/projects/markdown/basics">markdown</a>. C’est pratiquement un anti-format, en ce sens que le <em>markdown</em> est d’abord et avant tout du texte brut, sans flafla, sans encodage binaire ou enrobage XML, pouvant être lu et modifié avec le plus humble des éditeurs de texte. Là où le HTML - un langage de type <em>markup</em>, contraste intéressant - ajoute des balises dans le texte, rendant la lecture de la source difficile ou à tout le moins désagréable sans traitement préalable par un fureteur, le <em>markdown</em> utilise un nombre limité de légers artifices pour permettre d’identifier, par exemple, des en-têtes, une emphase, ou des points de forme. Ces artifices se traduisent aisément en code HTML ou une multitude d’autres formats via différents outils (dont le Calepin) mais même sous leur forme originelle, l’effet recherché est tout à fait perceptible (on peut d’ailleurs visualiser la source de chaque article sur Calepin en remplaçant le “.html” dans l’adresse par “.txt”). Un exemple:</p>
+
+<pre><code>:::markdown
+## Ceci est un en-tête ##
+
+Et voici une *emphase*, et _une autre_ avec une syntaxe alternative.
+
+*   Ceci est un point de forme.
+*   Et un autre.
+
+&gt; Et voici une citation, qui rappelle la syntaxe utilisée dans les 
+&gt; courriels lorsqu&#39;on répond en citant le message original.
+</code></pre>
+
+<p>D’une simplicité géniale. Plus de problème de compatibilité entre Mac, Windows, Linux, Android ou iOS, c’est du texte encodé en UTF-8, tout ce qu’il y a de plus standard aujourd’hui. En fait, certains en ont même fait leur <a href="http://www.hiltmon.com/blog/2012/02/20/the-markdown-mindset/">format portable à utiliser pour toute documentation</a>, au détriment des Word et LibreOffice de ce monde. Je considère fortement permettre cette syntaxe pour le <a href="http://www.compterenduweb.com/">Compte Rendu Web</a>, puisqu’elle combine expressivité, simplicité et rapidité, trois caractéristiques essentielles pour la prise de note en temps réel.</p>
+
+<h3>De la personnalité, une signature</h3>
+
+<p>Le Calepin enrobe le coffret dans les nuages de <em>dropbox</em> et la syntaxe pure et naturelle du <em>markdown</em> d’une fine couche de gestion à l’attention de l’auteur du blogue. À l’image de tout le reste, la page d’administration est dénuée de toute exhubérance, en trois courtes étapes tout est fait:</p>
+
+<p><img src="http://dl.dropbox.com/u/21605004/CalepinAdmin.jpg" alt="Administration du Calepin"/>
+</p>
+
+<ol>
+<li>L’authentification à son compte <em>dropbox</em>, qui sert par le fait même d’authentification au blogue.</li>
+<li>La configuration du blogue, soit le titre, l’option d’y ajouter le gestionnaire de commentaires qui est <a href="http://disqus.com/">Disqus</a> et c’est tout, l’option du lien social qui est <a href="https://twitter.com/PuerkitoBio">Twitter</a> et c’est tout, et le nom de domaine si on ne veut pas celui du Calepin par défaut.</li>
+<li>Le bouton de publication.</li>
+</ol>
+
+<p>Voilà. Il y a quelques options mineures au niveau des méta-données de chaque article et une configuration pour le site, principalement des valeurs par défaut, mais rien de renversant, et ce <em>par choix</em>.  Pas de blogoliste (<em>blog roll</em>), de nuage de mots-clefs (<em>tag cloud</em>), de catalogue de thèmes dans tous les tons de marron, de barre de partage pour trente-douze gazillions de sites sociaux. C’est la sympathique personnalité du Calepin, minimaliste jusqu’au bout!</p>
+</article>
+		</main>
+		<footer>
+			<div class="container">
+				<div class="left">
+					<a href="https://github.com/PuerkitoBio" title="@PuerkitoBio on GitHub">
+						<span class="icon-github-circled"></span>
+					</a>
+				</div>
+				<div class="right">
+					<a href="https://twitter.com/PuerkitoBio" title="@PuerkitoBio on Twitter">
+						<span class="icon-twitter"></span>
+					</a>
+				</div>
+				<div class="middle">
+					<h3>Recent posts</h3>
+					<ul>
+						<li>
+							<a href="010-demenagement">Ce blogue a déménagé sur GitHub</a>
+						</li>
+						<li>
+							<a href="009-je-men-vais">Je suis venu te dire que je m&#39;en vais</a>
+						</li>
+						<li>
+							<a href="008-backbone-computed-properties">Propriétés calculées avec Backbone</a>
+						</li>
+						<li>
+							<a href="007-implement-js">implement.js: typage fort et Javascript</a>
+						</li>
+						<li>
+							<a href="006-dependency-injection">Expérimentations sur l&#39;injection de dépendance avec node.js</a>
+						</li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container copyright">
+				<small>
+					built with 
+					<a href="https://github.com/PuerkitoBio/trofaf">trofaf</a>
+					.
+				</small>
+				<br />
+				<small>© 2013 Martin Angers</small>
+			</div>
+		</footer>
+	</body>
+</html>

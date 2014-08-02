@@ -1,0 +1,144 @@
+<!DOCTYPE html><!-- From HTML5 Boilerplate -->
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Expérimentations sur l&#39;injection de dépendance avec node.js</title>
+		<meta name="description" content="L&#39;injection de dépendance permet de découpler les différentes composantes d&#39;une application pour en faciliter l&#39;entretien, la testabilité, circonscrire l&#39;impact des changements, mais aussi pour imposer une façon d&#39;aborder la création de l&#39;application en une aggrégation de pièces simples, à la responsabilité ciblée, et à l&#39;API bien défini." />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="/css/normalize.css" />
+		<link rel="stylesheet" href="/css/main.css" />
+		<link rel="stylesheet" href="/css/fontello.css" />
+		<link type="text/css" href="http://fonts.googleapis.com/css?family=Telex" rel="stylesheet" />
+		<link title="RSS" href="http://localhost/rss" rel="alternate" type="application/rss&#43;xml" />
+	</head>
+	<body>
+		
+		<div class="header">
+			<div class="title">
+				<a href="/">Site Name</a>
+				<br />
+				<span class="tagline"></span>
+			</div>
+		</div>
+		<nav>
+			<div class="container">
+				<div class="left">
+					<a class="huge" href="007-implement-js" title="implement.js: typage fort et Javascript">«</a>
+				</div>
+				<div class="middle">
+					<span>Expérimentations sur l&#39;injection de dépendance avec node.js</span>
+				</div>
+				<div class="right">
+					<a href="005-structurer-express" title="Structurer une application Web avec Express et Node.js" class="huge">»</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</nav>
+		<main>
+			<time>2012-03-27</time>
+			<article><p>L’injection de dépendance (<em>dependency injection</em>) permet de découpler les différentes composantes d’une application pour en faciliter l’entretien, la testabilité, circonscrire l’impact des changements, mais aussi pour imposer une façon d’aborder la création de l’application en une aggrégation de pièces simples, à la responsabilité ciblée, et à l’API bien défini. Elle a comme effet secondaire, règle générale, une meilleure architecture.</p>
+
+<p>Dans les langages de programmation orientés-objet statiques, tels C# ou Java, le patron (<em>pattern</em>) d’injection de dépendance prend la forme d’une interface ou d’une classe abstraite, d’une (ou plusieurs) implémentation de cette interface, et d’un <em>assembleur</em>, responsable de créer l’instance concrète d’une implémentation de l’interface, et de l’injecter dans un objet “client” de la dépendance. <a href="http://martinfowler.com/articles/injection.html">Martin Fowler a écrit un brillant article sur le sujet</a>, c’est une lecture essentielle pour approfondir ce patron.</p>
+
+<p>Il existe, dans l’écosystème node, des librairies imitant le patron des langages statiques. Une simple recherche avec <code>npm search dependency injection</code> en donne un aperçu. C’est moins cette mécanique d’assemblage, relativement simple et bien rodée, qui m’intéresse dans le cas présent que les différentes façons de découpler deux modules avec Javascript, et plus spécifiquement sur la plateforme node. Dit autrement, j’expérimente sur comment obtenir les bénéfices de l’injection de dépendance, et non sur la traduction en javascript de l’implémentation traditionnelle de ce patron.</p>
+
+<h3>Le laboratoire <em>express-boilerplate</em></h3>
+
+<p>Avec un langage dynamique comme Javascript et son <a href="http://fr.wikipedia.org/wiki/Programmation_orient%C3%A9e_prototype">héritage par prototype</a>, il y a d’autres façons de faire. C’est ce que j’explore dans mon projet d’expérimentation <a href="https://github.com/PuerkitoBio/express-boilerplate">express-boilerplate sur GitHub</a>, qui évolue continuellement et qui est né de l’intérêt à publier concrètement ma <a href="http://hypermegatop.calepin.co/structurer-une-application-web-avec-express-et-nodejs.html">structure de projet proposée pour une application Web avec Express</a>. Au moment d’écrire ce billet, j’ai validé deux approches, disponibles dans deux branches git distinctes:</p>
+
+<ul>
+<li><p><strong>simple-DI</strong> : Cette approche classique, toute simple, reçoit les dépendances en paramètres, et le fichier <em>app.js</em> est responsable de l’assemblage. Par exemple, dans le module <em>router</em>:</p>
+
+<pre><code>:::javascript
+module.exports = function (server, handler) {
+    server.get(&#39;/&#39;, handler.renderIndex);
+};
+</code></pre>
+
+<p>et dans <em>app.js</em>:</p>
+
+<pre><code>:::javascript
+var server = require(&#39;./lib/server&#39;),
+    db = require(&#39;./lib/db&#39;),
+    handler = require(&#39;./lib/handler&#39;)(db);
+
+
+// Appeler router en lui passant ses dépendances
+require(&#39;./lib/router&#39;)(server, handler);
+</code></pre></li>
+
+<li><p><strong>prototype-extension</strong> : Cette branche utilise l’extension du prototype du HTTPServer de Express pour injecter le module <em>config</em> dans le module <em>server</em>. C’est un parfait exemple de ce que j’entends quand je parle d’obtenir “les bénéfices de l’injection de dépendance”, et non la retranscription du patron. Cette solution repose toutefois sur une hypothèse non négligeable: la dépendance commune de ces deux modules sur Express, et cette dépendance sur Express  n’est d’ailleurs pas découplée dans mon <em>boilerplate</em>. Mais puisqu’il s’agit d’un gabarit d’application Web visant précisément ce cadre d’application (ce <em>framework</em>), c’est une concession que je juge acceptable. Ça donne ceci:</p>
+
+<pre><code>:::javascript
+// * * * * config.js * * * *
+express.HTTPServer.prototype.applyConfiguration = function () {
+    ...
+}
+
+
+// * * * * server.js * * * *
+server = express.createServer();
+
+
+// Dépendance sur le module config, injectée via cet appel
+server.applyConfiguration();
+
+
+module.exports = server;
+</code></pre></li>
+</ul>
+
+<h3>Versatilité vs rigueur</h3>
+
+<p>Cependant, ce qu’on gagne en versatilité avec les langages dynamiques, on perd en rigueur (au sens “rigueur intrinsèque au langage”). L’avantage de l’approche avec interface des langages statiques, c’est d’avoir l’assurance que la dépendance reçue expose toutes les fonctionnalités voulues - méthodes et propriétés. Avec Javascript, si on reprend mon dernier exemple, je n’ai aucune assurance que le serveur Express implémente bel et bien <code>applyConfiguration()</code>. Dans un cas simple comme celui-ci, je pourrais aisément valider avant l’appel que “applyConfiguration” est bien défini sur l’objet “server”, et que c’est bel et bien une fonction. Mais dans un cas plus complexe, où plusieurs méthodes et propriétés de la dépendance sont utilisées, ça peut rapidement devenir hors de contrôle.</p>
+
+<p>C’est ce qu’il manque, à mon avis, aux solutions actuelles sous Javascript. Quelque chose pour valider que le contrat attendu par le “client” soit respecté par la dépendance fournie. J’ai quelques idées sur le sujet, on verra si ça mûrira, gardez l’oeil sur <a href="https://github.com/PuerkitoBio/express-boilerplate">le référentiel GitHub</a>, et si vous avez commentaires et suggestions, l’espace ci-bas est là pour ça!</p>
+</article>
+		</main>
+		<footer>
+			<div class="container">
+				<div class="left">
+					<a href="https://github.com/PuerkitoBio" title="@PuerkitoBio on GitHub">
+						<span class="icon-github-circled"></span>
+					</a>
+				</div>
+				<div class="right">
+					<a href="https://twitter.com/PuerkitoBio" title="@PuerkitoBio on Twitter">
+						<span class="icon-twitter"></span>
+					</a>
+				</div>
+				<div class="middle">
+					<h3>Recent posts</h3>
+					<ul>
+						<li>
+							<a href="010-demenagement">Ce blogue a déménagé sur GitHub</a>
+						</li>
+						<li>
+							<a href="009-je-men-vais">Je suis venu te dire que je m&#39;en vais</a>
+						</li>
+						<li>
+							<a href="008-backbone-computed-properties">Propriétés calculées avec Backbone</a>
+						</li>
+						<li>
+							<a href="007-implement-js">implement.js: typage fort et Javascript</a>
+						</li>
+						<li>
+							<a href="006-dependency-injection">Expérimentations sur l&#39;injection de dépendance avec node.js</a>
+						</li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container copyright">
+				<small>
+					built with 
+					<a href="https://github.com/PuerkitoBio/trofaf">trofaf</a>
+					.
+				</small>
+				<br />
+				<small>© 2013 Martin Angers</small>
+			</div>
+		</footer>
+	</body>
+</html>
